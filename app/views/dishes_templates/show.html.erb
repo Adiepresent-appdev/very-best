@@ -1,56 +1,71 @@
+
 <div class="row mt-2 justify-content-md-center">
-<div class="col-md-6">
-<div class="card">
-<div class="card-header">
-<h4 class="card-title">
-You loved the <%= @dish.name %> at...
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">
+          You loved the <%= @dish.name %> at...
 
-<div class="badge badge-primary float-right">
-<%= @dish.cuisine.name %>
+            <div class="badge badge-primary float-right">
+              <%= @dish.cuisine.name %>
+            </div>
+        </h4>
+      </div>
+      
+      
+      <ul class="list-group">
+        <li class="list-group-item">
+          <form action="/create_bookmark" class="form-inline float-left" method="post">
+            <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+            <input type="hidden" name="dish_id" value="<%= @dish.id %>">
+            <input type="hidden" name="user_id" value="<%= current_user.id %>">
+            <input type="hidden" name="notes" value="">
+            
+            <div class="form-group mr-sm-1">
+              <%= select_tag("venue_id", options_from_collection_for_select(Venue.all, :id, :name, @dish.try(:venue_id)), 
+              :class => "form-control") %>
+              
+                
+            </div>  
+            
+            <button class="btn btn-primary btn">
+              <i class="fa fa-heart"></i>
+            </button>
+          </form>
+        </li>  
+            
+        <% @dish.specialists.each do |specialist| %>
+        <% if Bookmark.where(:user_id => current_user.id, :venue_id => specialist.id, :dish_id => @dish.id).exists? %>
+        
+        <li class="list-group-item">>
+        
+        <p> 
+          <a href="/venues/<%= specialist.id %>">
+            <%= specialist.name %>
+          </a>
+            
+        </p>
+
+          
+        </li>    
+      <% end %>
+      <% end %>
+      
+
+    </div>
+  </div>
 </div>
-</h4>
-</div>
+      
 
 
-<ul class="list-group">
-<li class="list-group-item">
-<form action="/create_bookmark" class="form-inline float-left" method="post">
-<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-<input type="hidden" name="dish_id" value="<%= @dish.id %>">
-<input type="hidden" name="user_id" value="<%= current_user.id %>">
-<input type="hidden" name="notes" value="">
-
-<div class="form-group mr-sm-1">
-<%= select_tag("venue_id", options_from_collection_for_select(Venue.all, :id, :name, @dish.try(:venue_id)), 
-:class => "form-control") %>
 
 
-</div>
-
-<button class="btn btn-primary btn">
-<i class="fa fa-heart"></i>
-</button>
-</form>
-</li>
-
-<% @dish.specialists.each do |specialist| %>
-<% if Bookmark.where(:user_id => current_user.id, :venue_id => specialist.id, :dish_id => @dish.id).exists? %>
-
-<li class="list-group-item">>
-
-<p> 
-<a href="/venues/<%= specialist.id %>">
-<%= specialist.name %>
-</a>
-
-</p>
 
 
-</li>
-<% end %>
-<% end %>
 
 
-</div>
-</div>
-</div>
+
+
+
+
+
